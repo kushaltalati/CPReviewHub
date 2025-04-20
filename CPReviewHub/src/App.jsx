@@ -11,6 +11,7 @@ function App() {
     <Router>
       <div className="App">
         <Navbar />
+        {/* hello test */}
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/codeforces" element={<Codeforces />} />
