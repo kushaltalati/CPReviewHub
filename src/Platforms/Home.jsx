@@ -13,6 +13,7 @@ function HomePage() {
         <span className="font-semibold text-blue-600">Codeforces</span>,{" "}
         <span className="font-semibold text-yellow-500">LeetCode</span>,{" "}
         <span className="font-semibold text-red-500">CodeChef</span>.
+        {/* <span className="font-semibold text-green-600">AtCoder</span>. */}
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl">
@@ -40,7 +41,7 @@ const platforms = [
   {
     name: "Codeforces",
     description: "View your competitive programming stats and rating progression on Codeforces.",
-    link: "/",
+    link: "/codeforces",
     color: "text-blue-600",
     bgColor: "bg-blue-600",
   },
@@ -58,6 +59,13 @@ const platforms = [
     color: "text-red-500",
     bgColor: "bg-red-500",
   },
+  // {
+  //   name: "AtCoder",
+  //   description: "Review your performance on AtCoder and track your growth.",
+  //   link: "/atcoder",
+  //   color: "text-green-600",
+  //   bgColor: "bg-green-600",
+  // },
 ];
 
 export default HomePage;
