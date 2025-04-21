@@ -1,5 +1,16 @@
 import { useState } from "react";
 
+
+const getColorClassByRating = (rating) => {
+  if (rating >= 2500) return "text-orange-500"; // 6-7
+  if (rating >= 2200) return "text-red-500"; // 5
+  if (rating >= 2000) return "text-pink-500"; // 4
+  if (rating >= 1800) return "text-purple-500"; // 3
+  if (rating >= 1600) return "text-blue-400"; // 2
+  if (rating >= 1400) return "text-green-400"; // 1
+  return "text-gray-400"; // newbie
+};
+
 const Codechef = () => {
   const [username, setUsername] = useState("");
   const [data, setData] = useState(null);
@@ -15,8 +26,7 @@ const Codechef = () => {
       const user = await response.json();
 
       if (user.success === true) {
-        // const user = result.result.data.content;
-        console.log(user)
+        console.log(user);
 
         const stats = {
           username: username,
@@ -60,11 +70,11 @@ const Codechef = () => {
           onKeyDown={(e) => {
             if (e.key === "Enter") handleSearch(e);
           }}
-          className="border border-white-700 bg-white-800 text-white px-4 py-2 rounded-md w-full max-w-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
+          className="border border-red-700 bg-white-800 text-white px-4 py-2 rounded-md w-full max-w-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
         <button
           type="submit"
-          className="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 transition"
+          className="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition"
         >
           Search
         </button>
@@ -84,8 +94,8 @@ const Codechef = () => {
               className="w-28 h-28 rounded-full border-4 border-yellow-500 mb-4"
             />
             <h2 className="text-3xl font-semibold mb-2">{data.username}</h2>
-            <p className="text-sm text-yellow-400 mb-6">
-              {data.stars}★ | {data.country}
+            <p className={`text-sm mb-6 ${getColorClassByRating(data.rating)}`}>
+              {data.stars} | {data.country}
             </p>
           </div>
 
@@ -94,8 +104,8 @@ const Codechef = () => {
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-lg">
-            <Stat label="Current Rating" value={data.rating} />
-            <Stat label="Highest Rating" value={data.highestRating} />
+            <Stat label="Current Rating" value={data.rating} colorValue={data.rating} />
+            <Stat label="Highest Rating" value={data.highestRating} colorValue={data.highestRating} />
             <Stat label="Global Rank" value={data.globalRank} />
             <Stat label="Country Rank" value={data.countryRank} />
           </div>
@@ -109,11 +119,14 @@ const Codechef = () => {
   );
 };
 
-const Stat = ({ label, value }) => (
-  <div className="flex justify-between bg-gray-700 p-4 rounded-md shadow-sm">
-    <span className="font-medium">{label}</span>
-    <span className="font-bold text-purple-400">{value}</span>
-  </div>
-);
+const Stat = ({ label, value, colorValue }) => {
+  const colorClass = colorValue ? getColorClassByRating(colorValue) : "text-purple-400";
+  return (
+    <div className="flex justify-between bg-gray-700 p-4 rounded-md shadow-sm">
+      <span className="font-medium">{label}</span>
+      <span className={`font-bold ${colorClass}`}>{value}</span>
+    </div>
+  );
+};
 
 export default Codechef;

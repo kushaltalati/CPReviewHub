@@ -1,5 +1,24 @@
 import { useState } from "react";
 
+const getRankColor = (rating) => {
+  const numericRating = typeof rating === "number" ? rating : parseFloat(rating);
+  if (isNaN(numericRating)) {
+    return { border: "border-gray-400", text: "text-gray-400" };
+  }
+
+  if (numericRating < 1500) {
+    return { border: "border-gray-500", text: "text-gray-500" };
+  } else if (numericRating < 2000) {
+    return { border: "border-green-400", text: "text-green-400" };
+  } else if (numericRating < 2500) {
+    return { border: "border-yellow-400", text: "text-yellow-400" };
+  } else if (numericRating < 3000) {
+    return { border: "border-blue-400", text: "text-blue-400" };
+  } else {
+    return { border: "border-red-400", text: "text-red-400" };
+  }
+};
+
 const LeetCode = () => {
   const [username, setUsername] = useState("");
   const [data, setData] = useState(null);
@@ -7,7 +26,6 @@ const LeetCode = () => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    
     setLoading(true);
     setData(null);
 
@@ -15,21 +33,24 @@ const LeetCode = () => {
       const userInfoRes = await fetch(`https://alfa-leetcode-api.onrender.com/userContestRankingInfo/${username}`);
       const userQuesInfoRes = await fetch(`https://leetcode-stats-api.herokuapp.com/${username}`);
       const img = await fetch(`https://alfa-leetcode-api.onrender.com/${username}`);
-  
+
       if (!userInfoRes.ok || !userQuesInfoRes.ok) {
-        throw new Error('Failed to fetch user data');
+        throw new Error("Failed to fetch user data");
       }
-  
+
       const userData = await userInfoRes.json();
       const userQueData = await userQuesInfoRes.json();
       const imgg = await img.json();
-  
-      if (userQueData.status !== 'error') {
+      // console.log(userData);
+      // console.log(userQueData);
+      // console.log(imgg);
+
+      if (userQueData.status !== "error") {
         const rating = userData.data.userContestRanking?.rating ?? "Unrated";
-  
+
         const stats = {
           username: username,
-          rating: rating !== "Unrated" ? rating.toFixed(0) : "Unrated",
+          rating: rating !== "Unrated" ? parseFloat(rating.toFixed(0)) : "Unrated",
           globalrank: userData.data.userContestRanking?.globalRanking ?? "N/A",
           rank: userQueData.ranking ?? "N/A",
           solved: userQueData.totalSolved ?? 0,
@@ -40,7 +61,7 @@ const LeetCode = () => {
           contestAppeared: userData.data.userContestRanking.attendedContestsCount ?? 0,
           photo: imgg.avatar,
         };
-  
+
         setData(stats);
       } else {
         console.log("Invalid or no data returned for username:", username);
@@ -51,25 +72,6 @@ const LeetCode = () => {
       setData(null);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const getRankColor = (rating) => {
-    const numericRating = typeof rating === "number" ? rating : parseFloat(rating);
-    if (isNaN(numericRating)) {
-      return { border: "border-gray-400", text: "text-gray-400" }; 
-    }
-
-    if (rating < 1500) {
-      return { border: "border-gray-500", text: "text-gray-500" };
-    } else if (rating < 2000) {
-      return { border: "border-green-400", text: "text-green-400" };
-    } else if (rating < 2500) {
-      return { border: "border-yellow-400", text: "text-yellow-400" };
-    } else if (rating < 3000) {
-      return { border: "border-blue-400", text: "text-blue-400" };
-    } else {
-      return { border: "border-red-400", text: "text-red-400" };
     }
   };
 
@@ -92,11 +94,11 @@ const LeetCode = () => {
           onKeyDown={(e) => {
             if (e.key === "Enter") handleSearch(e);
           }}
-          className="border border-gray-700 bg-gray-800 text-white px-4 py-2 rounded-md w-full max-w-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="border border-yellow -700 bg-white-800 text-white px-4 py-2 rounded-md w-full max-w-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
         <button
           type="submit"
-          className="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 transition"
+          className="bg-yellow-600 text-white px-6 py-2 rounded-md hover:bg-yellow-700 transition"
         >
           Search
         </button>
@@ -119,7 +121,7 @@ const LeetCode = () => {
               {data.username}
             </h2>
             <p className={`text-sm ${getRankColor(data.rating).text} mb-6`}>
-              Global Rank: {data.globalrank} | Rating: {typeof data.rating === "number" ? data.rating.toFixed(0) : "Unrated"}
+              Global Rank: {data.globalrank} | Rating: {typeof data.rating === "number" ? data.rating : "Unrated"}
             </p>
           </div>
 
@@ -128,7 +130,7 @@ const LeetCode = () => {
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-white text-lg">
-            <Stat label="Rating" value={data.rating} />
+            <Stat label="Rating" value={data.rating} colorValue={data.rating} />
             <Stat label="Rank" value={data.rank} />
             <Stat label="Contests Appeared" value={data.contestAppeared} />
             <Stat label="Acceptance Rate" value={`${data.acceptanceRate}%`} />
@@ -147,11 +149,14 @@ const LeetCode = () => {
   );
 };
 
-const Stat = ({ label, value }) => (
-  <div className="flex justify-between bg-gray-700 p-4 rounded-md shadow-sm">
-    <span className="font-medium">{label}</span>
-    <span className="font-bold text-purple-400">{value}</span>
-  </div>
-);
+const Stat = ({ label, value, colorValue }) => {
+  const { text } = getRankColor(colorValue);
+  return (
+    <div className="flex justify-between bg-gray-700 p-4 rounded-md shadow-sm">
+      <span className="font-medium">{label}</span>
+      <span className={`font-bold ${colorValue ? text : "text-purple-400"}`}>{value}</span>
+    </div>
+  );
+};
 
 export default LeetCode;

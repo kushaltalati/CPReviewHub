@@ -1,16 +1,42 @@
 import { useState } from "react";
 
+// Moved to top so it can be reused in Stat
+const getRankColor = (rating) => {
+  if (!rating || isNaN(rating)) {
+    return { border: "border-gray-500", text: "text-gray-500" };
+  }
+  if (rating < 1200) {
+    return { border: "border-gray-500", text: "text-gray-500" };
+  } else if (rating < 1400) {
+    return { border: "border-green-400", text: "text-green-400" };
+  } else if (rating < 1600) {
+    return { border: "border-[3px] border-[#9be3cb]", text: "text-[#9be3cb]" };
+  } else if (rating < 1900) {
+    return { border: "border-[3px] border-[#0000FF]", text: "text-[#0000FF]" };
+  } else if (rating < 2100) {
+    return { border: "border-[3px] border-[#AA00AA]", text: "text-[#AA00AA]" };
+  } else if (rating < 2300) {
+    return { border: "border-[3px] border-[#DC143C]", text: "text-[#DC143C]" };
+  } else if (rating < 2400) {
+    return { border: "border-[3px] border-[#B22222]", text: "text-[#B22222]" };
+  } else if (rating < 2600) {
+    return { border: "border-[3px] border-[#FF4500]", text: "text-[#FF4500]" };
+  } else if (rating < 3000) {
+    return { border: "border-[3px] border-[#8B0000]", text: "text-[#8B0000]" };
+  } else {
+    return { border: "border-[3px] border-[#8B0000]", text: "text-[#8B0000]" };
+  }
+};
+
 const Codeforces = () => {
   const [username, setUsername] = useState("");
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
 
   const handleSearch = async (e) => {
     e.preventDefault();
-
-    // Set loading to true before starting the fetch
     setLoading(true);
-    setData(null); // Clear previous data
+    setData(null);
 
     try {
       const [userInfoRes, submissionsRes, ratingRes] = await Promise.all([
@@ -64,31 +90,7 @@ const Codeforces = () => {
       console.error("Error fetching Codeforces data:", error);
       setData(null);
     } finally {
-      setLoading(false); // Set loading to false after the fetch is complete
-    }
-  };
-
-  const getRankColor = (rating) => {
-    if (rating < 1200) {
-      return { border: "border-gray-500", text: "text-gray-500" };
-    } else if (rating < 1400) {
-      return { border: "border-green-400", text: "text-green-400" };
-    } else if (rating < 1600) {
-      return { border: "border-[3px] border-[#9be3cb]", text: "text-[#9be3cb]" }; // Pastel Teal for Specialist
-    } else if (rating < 1900) {
-      return { border: "border-[3px] border-[#0000FF]", text: "text-[#0000FF]" };
-    } else if (rating < 2100) {
-      return { border: "border-[3px] border-[#AA00AA]", text: "text-[#AA00AA]" };
-    } else if (rating < 2300) {
-      return { border: "border-[3px] border-[#DC143C]", text: "text-[#DC143C]" };
-    } else if (rating < 2400) {
-      return { border: "border-[3px] border-[#B22222]", text: "text-[#B22222]" };
-    } else if (rating < 2600) {
-      return { border: "border-[3px] border-[#FF4500]", text: "text-[#FF4500]" };
-    } else if (rating < 3000) {
-      return { border: "border-[3px] border-[#8B0000]", text: "text-[#8B0000]" };
-    } else {
-      return { border: "border-[3px] border-[#8B0000]", text: "text-[#8B0000]" };
+      setLoading(false);
     }
   };
 
@@ -111,11 +113,11 @@ const Codeforces = () => {
           onKeyDown={(e) => {
             if (e.key === "Enter") handleSearch(e);
           }}
-          className="border border-white-700 bg-white-800 text-white px-4 py-2 rounded-md w-full max-w-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="border border-blue-700 bg-white-800 text-white px-4 py-2 rounded-md w-full max-w-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
         <button
           type="submit"
-          className="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 transition"
+          className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
         >
           Search
         </button>
@@ -147,8 +149,8 @@ const Codeforces = () => {
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-white text-lg">
-            <Stat label="Current Rating" value={data.rating} />
-            <Stat label="Max Rating" value={data.maxRating} />
+            <Stat label="Current Rating" value={data.rating} colorValue={data.rating} />
+            <Stat label="Max Rating" value={data.maxRating} colorValue={data.maxRating} />
             <Stat label="Rank" value={data.rank?.replace(/_/g, " ")} />
             <Stat label="Max Rank" value={data.maxRank?.replace(/_/g, " ")} />
             <Stat label="Total Submissions" value={data.submissions} />
@@ -166,11 +168,16 @@ const Codeforces = () => {
   );
 };
 
-const Stat = ({ label, value }) => (
-  <div className="flex justify-between bg-gray-700 p-4 rounded-md shadow-sm">
-    <span className="font-medium">{label}</span>
-    <span className="font-bold text-purple-400">{value}</span>
-  </div>
-);
+const Stat = ({ label, value, colorValue }) => {
+  const { text } = getRankColor(colorValue);
+  return (
+    <div className="flex justify-between bg-gray-700 p-4 rounded-md shadow-sm">
+      <span className="font-medium">{label}</span>
+      <span className={`font-bold ${colorValue ? text : "text-purple-400"}`}>
+        {value}
+      </span>
+    </div>
+  );
+};
 
 export default Codeforces;

@@ -3,7 +3,7 @@ import HomePage from "./Platforms/Home";
 import Codeforces from "./Platforms/Codeforces";
 import LeetCode from "./Platforms/Leetcode";
 import Codechef from "./Platforms/Codechef"
-// import Atcoder from "./components/Atcoder";
+// import AtCoder from "./Platforms/AtCoder";
 import Navbar from "./components/Navbar";
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
           <Route path="/codeforces" element={<Codeforces />} />
           <Route path="/leetcode" element={<LeetCode />} />
           <Route path="/codechef" element={<Codechef />} />
-          {/* <Route path="/atcoder" element={<Atcoder />} /> */}
+          {/* <Route path="/atcoder" element={<AtCoder />} /> */}
         </Routes>
       </div>
     </Router>

@@ -6,7 +6,7 @@ const Navbar = () => {
     { name: "Codeforces", path: "/codeforces" },
     { name: "LeetCode", path: "/leetcode" },
     { name: "CodeChef", path: "/codechef" },
-    { name: "AtCoder", path: "/atcoder" },
+    // { name: "AtCoder", path: "/atcoder" },
   ];
 
   return (

@@ -1,29 +1,31 @@
-// src/components/HomePage.jsx
 import { Link } from "react-router-dom";
 
 function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-tr from-gray-50 to-gray-200 flex flex-col items-center justify-center p-6">
-      <h1 className="text-4xl md:text-5xl font-extrabold text-blue-700 mb-6 text-center leading-tight">
-        Competitive Programming <br className="hidden md:block" />
+    <div className="min-h-screen bg-gradient-to-tr from-gray-50 to-gray-200 flex flex-col items-center justify-center p-8">
+      <h1 className="text-4xl sm:text-5xl font-extrabold text-blue-700 mb-6 text-center leading-tight">
+        Competitive Programming <br className="hidden sm:block" />
         <span className="text-purple-600">Profile Review Hub</span>
       </h1>
 
-      <p className="text-lg md:text-xl text-gray-700 text-center max-w-3xl mb-10">
-        Track your performance across platforms like <span className="font-semibold text-blue-600">Codeforces</span>, <span className="font-semibold text-yellow-500">LeetCode</span>, <span className="font-semibold text-red-500">CodeChef</span>, and <span className="font-semibold text-green-600">AtCoder</span>.
+      <p className="text-lg sm:text-xl text-gray-700 text-center max-w-4xl mb-12">
+        Track your performance across platforms like{" "}
+        <span className="font-semibold text-blue-600">Codeforces</span>,{" "}
+        <span className="font-semibold text-yellow-500">LeetCode</span>,{" "}
+        <span className="font-semibold text-red-500">CodeChef</span>.
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl">
         {platforms.map((platform) => (
           <div
             key={platform.name}
-            className="bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transition duration-300 transform hover:-translate-y-1 text-center"
+            className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-2xl transition duration-300 transform hover:-translate-y-2 text-center"
           >
             <h2 className={`text-2xl font-bold ${platform.color} mb-4`}>{platform.name}</h2>
             <p className="text-gray-600 mb-6">{platform.description}</p>
             <Link
               to={platform.link}
-              className={`${platform.bgColor} text-white px-5 py-2 rounded-lg font-medium hover:brightness-110 transition`}
+              className={`${platform.bgColor} text-white px-6 py-3 rounded-lg font-semibold hover:brightness-110 transition duration-200`}
             >
               Visit {platform.name}
             </Link>
@@ -55,13 +57,6 @@ const platforms = [
     link: "/codechef",
     color: "text-red-500",
     bgColor: "bg-red-500",
-  },
-  {
-    name: "AtCoder",
-    description: "Review your performance on AtCoder and track your growth.",
-    link: "/atcoder",
-    color: "text-green-600",
-    bgColor: "bg-green-600",
   },
 ];
 
