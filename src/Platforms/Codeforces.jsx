@@ -1,5 +1,5 @@
 import { useState } from "react";
-import img from '../assets/codeforces.png' 
+import img from '../images/codeforces.png' 
 
 const getRankColor = (rating) => {
   if (!rating || isNaN(rating)) {

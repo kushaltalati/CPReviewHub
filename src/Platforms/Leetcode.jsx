@@ -1,5 +1,5 @@
 import { useState } from "react";
-import img from '../assets/leetcode.png'
+import img from '../images/leetcode.png'
 
 const getRankColor = (rating) => {
   const numericRating = typeof rating === "number" ? rating : parseFloat(rating);

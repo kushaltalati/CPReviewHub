@@ -1,5 +1,5 @@
 import { useState } from "react";
-import img from '../assets/codechef.svg.png' 
+import img from '../images/codechef.svg.png' 
 
 const getColorClassByRating = (rating) => {
   if (rating >= 2500) return "text-orange-500"; // 6-7
