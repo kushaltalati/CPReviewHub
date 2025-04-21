@@ -91,6 +91,7 @@ const Codeforces = () => {
       setData(null);
     } finally {
       setLoading(false);
+      
     }
   };
 
