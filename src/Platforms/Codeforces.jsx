@@ -1,5 +1,5 @@
 import { useState } from "react";
-import img from '../images/codeforces.png' 
+// import img from '../images/codeforces.png' 
 
 const getRankColor = (rating) => {
   if (!rating || isNaN(rating)) {
@@ -102,7 +102,7 @@ const Codeforces = () => {
         className="sticky top-0 z-10 bg-gray-900 shadow-lg p-4 rounded-xl flex justify-center gap-4 mb-6"
       >
         <img
-          src={img}
+          src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Codeforces_logo.svg"
           alt="Codeforces Logo"
           className="h-12 w-auto mr-4"
         />

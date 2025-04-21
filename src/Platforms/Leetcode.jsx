@@ -1,5 +1,5 @@
 import { useState } from "react";
-import img from '../images/leetcode.png'
+// import img from '../images/leetcode.png'
 
 const getRankColor = (rating) => {
   const numericRating = typeof rating === "number" ? rating : parseFloat(rating);
@@ -75,7 +75,7 @@ const LeetCode = () => {
         onSubmit={handleSearch}
         className="sticky top-0 z-10 bg-gray-900 shadow-lg p-4 rounded-xl flex justify-center gap-4 mb-6"
       >
-        <img src={img} alt="LeetCode Logo" className="h-12 w-auto mr-4" />
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/LeetCode_Logo_black_with_text.svg" alt="LeetCode Logo" className="h-12 w-auto mr-4" />
         <input
           type="text"
           placeholder="Enter LeetCode Username"
