@@ -1,39 +1,37 @@
 import { useState } from "react";
-// import img from '../images/leetcode.png'
 
 const getRankColor = (rating) => {
   const numericRating = typeof rating === "number" ? rating : parseFloat(rating);
-  if (isNaN(numericRating)) {
-    return { border: "border-gray-400", text: "text-gray-400" };
-  }
-
-  if (numericRating < 1500) {
-    return { border: "border-gray-500", text: "text-gray-500" };
-  } else if (numericRating < 2000) {
-    return { border: "border-green-400", text: "text-green-400" };
-  } else if (numericRating < 2500) {
-    return { border: "border-yellow-400", text: "text-yellow-400" };
-  } else if (numericRating < 3000) {
-    return { border: "border-blue-400", text: "text-blue-400" };
-  } else {
-    return { border: "border-red-400", text: "text-red-400" };
-  }
+  if (isNaN(numericRating)) return { border: "border-gray-400", text: "text-gray-400" };
+  if (numericRating < 1500) return { border: "border-gray-500", text: "text-gray-500" };
+  if (numericRating < 2000) return { border: "border-green-400", text: "text-green-400" };
+  if (numericRating < 2500) return { border: "border-yellow-400", text: "text-yellow-400" };
+  if (numericRating < 3000) return { border: "border-blue-400", text: "text-blue-400" };
+  return { border: "border-red-400", text: "text-red-400" };
 };
 
 const LeetCode = () => {
   const [username, setUsername] = useState("");
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    if (!username.trim()) return;
+
     setLoading(true);
     setData(null);
+    setError("");
 
     try {
       const userInfoRes = await fetch(`https://alfa-leetcode-api.onrender.com/userContestRankingInfo/${username}`);
       const userQuesInfoRes = await fetch(`https://leetcode-stats-api.herokuapp.com/${username}`);
       const imgRes = await fetch(`https://alfa-leetcode-api.onrender.com/${username}`);
+
+      if ([userInfoRes.status, userQuesInfoRes.status, imgRes.status].includes(429)) {
+        throw new Error("Too many requests. Please try again after some time.(BEACUSE LEETCODE API doesnt return all the calls evrytime, TRY LATER)");
+      }
 
       if (!userInfoRes.ok || !userQuesInfoRes.ok || !imgRes.ok) {
         throw new Error("Failed to fetch user data");
@@ -57,13 +55,13 @@ const LeetCode = () => {
         mediumSolved: userStats?.mediumSolved ?? 0,
         hardSolved: userStats?.hardSolved ?? 0,
         contestAppeared: contestInfo?.attendedContestsCount ?? "N/A",
-        photo: imgData?.avatar ?? "/default-avatar.png",
+        photo: imgData?.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png",
       };
 
       setData(stats);
     } catch (error) {
-      console.error("Error fetching LeetCode data:", error);
-      setData(null);
+      console.error("Error fetching LeetCode data:", error.message);
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -73,15 +71,19 @@ const LeetCode = () => {
     <div className="bg-gray-800 min-h-screen p-6">
       <form
         onSubmit={handleSearch}
-        className="sticky top-0 z-10 bg-gray-900 shadow-lg p-4 rounded-xl flex justify-center gap-4 mb-6"
+        className="sticky top-0 z-10 bg-gray-900 shadow-lg p-4 rounded-xl flex flex-wrap justify-center gap-4 mb-6"
       >
-        <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/LeetCode_Logo_black_with_text.svg" alt="LeetCode Logo" className="h-12 w-auto mr-4" />
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/0/0a/LeetCode_Logo_black_with_text.svg"
+          alt="LeetCode Logo"
+          className="h-12 w-auto mr-4"
+        />
         <input
           type="text"
           placeholder="Enter LeetCode Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          className="border border-yellow-700 bg-white-800 text-white px-4 py-2 rounded-md w-full max-w-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="border border-yellow-700 bg-white/10 text-white px-4 py-2 rounded-md w-full max-w-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
         <button
           type="submit"
@@ -89,8 +91,10 @@ const LeetCode = () => {
         >
           Search
         </button>
-        <h3 className="text-white">*ONLY if any LEETCODE contests given</h3>
+        <h3 className="text-white text-sm">*Only if any LeetCode contests have been given</h3>
       </form>
+
+      {error && <p className="text-red-400 text-center mb-4">{error}</p>}
 
       {loading ? (
         <div className="text-center text-white">
@@ -124,9 +128,7 @@ const LeetCode = () => {
             <Stat label="Hard Solved" value={data.hardSolved} />
           </div>
         </div>
-      ) : (
-        <p className="text-center text-gray-500 mt-10">No data found. Search a valid LeetCode username.</p>
-      )}
+      ) : null}
     </div>
   );
 };
