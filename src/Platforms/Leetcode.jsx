@@ -1,4 +1,5 @@
 import { useState } from "react";
+import img from '../assets/leetcode.png'
 
 const getRankColor = (rating) => {
   const numericRating = typeof rating === "number" ? rating : parseFloat(rating);
@@ -32,41 +33,34 @@ const LeetCode = () => {
     try {
       const userInfoRes = await fetch(`https://alfa-leetcode-api.onrender.com/userContestRankingInfo/${username}`);
       const userQuesInfoRes = await fetch(`https://leetcode-stats-api.herokuapp.com/${username}`);
-      const img = await fetch(`https://alfa-leetcode-api.onrender.com/${username}`);
+      const imgRes = await fetch(`https://alfa-leetcode-api.onrender.com/${username}`);
 
-      if (!userInfoRes.ok || !userQuesInfoRes.ok) {
+      if (!userInfoRes.ok || !userQuesInfoRes.ok || !imgRes.ok) {
         throw new Error("Failed to fetch user data");
       }
 
-      const userData = await userInfoRes.json();
-      const userQueData = await userQuesInfoRes.json();
-      const imgg = await img.json();
-      // console.log(userData);
-      // console.log(userQueData);
-      // console.log(imgg);
+      const userInfo = await userInfoRes.json();
+      const userStats = await userQuesInfoRes.json();
+      const imgData = await imgRes.json();
 
-      if (userQueData.status !== "error") {
-        const rating = userData.data.userContestRanking?.rating ?? "Unrated";
+      const contestInfo = userInfo?.data?.userContestRanking || null;
+      const rating = contestInfo?.rating ?? "Unrated";
 
-        const stats = {
-          username: username,
-          rating: rating !== "Unrated" ? parseFloat(rating.toFixed(0)) : "Unrated",
-          globalrank: userData.data.userContestRanking?.globalRanking ?? "N/A",
-          rank: userQueData.ranking ?? "N/A",
-          solved: userQueData.totalSolved ?? 0,
-          acceptanceRate: userQueData.acceptanceRate ?? "N/A",
-          easySolved: userQueData.easySolved ?? 0,
-          mediumSolved: userQueData.mediumSolved ?? 0,
-          hardSolved: userQueData.hardSolved ?? 0,
-          contestAppeared: userData.data.userContestRanking.attendedContestsCount ?? 0,
-          photo: imgg.avatar,
-        };
+      const stats = {
+        username,
+        rating: rating !== "Unrated" ? parseFloat(rating.toFixed(0)) : "Unrated",
+        globalrank: contestInfo?.globalRanking ?? "N/A",
+        rank: userStats?.ranking ?? "N/A",
+        solved: userStats?.totalSolved ?? 0,
+        acceptanceRate: userStats?.acceptanceRate ?? "N/A",
+        easySolved: userStats?.easySolved ?? 0,
+        mediumSolved: userStats?.mediumSolved ?? 0,
+        hardSolved: userStats?.hardSolved ?? 0,
+        contestAppeared: contestInfo?.attendedContestsCount ?? "N/A",
+        photo: imgData?.avatar ?? "/default-avatar.png",
+      };
 
-        setData(stats);
-      } else {
-        console.log("Invalid or no data returned for username:", username);
-        setData(null);
-      }
+      setData(stats);
     } catch (error) {
       console.error("Error fetching LeetCode data:", error);
       setData(null);
@@ -81,20 +75,13 @@ const LeetCode = () => {
         onSubmit={handleSearch}
         className="sticky top-0 z-10 bg-gray-900 shadow-lg p-4 rounded-xl flex justify-center gap-4 mb-6"
       >
-        <img
-          src="../image/LeetCode.png"
-          alt="LeetCode Logo"
-          className="h-12 w-auto mr-4"
-        />
+        <img src={img} alt="LeetCode Logo" className="h-12 w-auto mr-4" />
         <input
           type="text"
           placeholder="Enter LeetCode Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleSearch(e);
-          }}
-          className="border border-yellow -700 bg-white-800 text-white px-4 py-2 rounded-md w-full max-w-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="border border-yellow-700 bg-white-800 text-white px-4 py-2 rounded-md w-full max-w-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
         <button
           type="submit"
@@ -102,6 +89,7 @@ const LeetCode = () => {
         >
           Search
         </button>
+        <h3 className="text-white">*ONLY if any LEETCODE contests given</h3>
       </form>
 
       {loading ? (
@@ -117,17 +105,13 @@ const LeetCode = () => {
               alt="Profile"
               className={`w-28 h-28 rounded-full ${getRankColor(data.rating).border} border-4 mb-4`}
             />
-            <h2 className="text-3xl font-semibold text-white mb-2 text-center">
-              {data.username}
-            </h2>
+            <h2 className="text-3xl font-semibold text-white mb-2 text-center">{data.username}</h2>
             <p className={`text-sm ${getRankColor(data.rating).text} mb-6`}>
               Global Rank: {data.globalrank} | Rating: {typeof data.rating === "number" ? data.rating : "Unrated"}
             </p>
           </div>
 
-          <h2 className="text-3xl font-semibold text-white mb-6 text-center">
-            LeetCode Stats
-          </h2>
+          <h2 className="text-3xl font-semibold text-white mb-6 text-center">LeetCode Stats</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-white text-lg">
             <Stat label="Rating" value={data.rating} colorValue={data.rating} />
@@ -141,9 +125,7 @@ const LeetCode = () => {
           </div>
         </div>
       ) : (
-        <p className="text-center text-gray-500 mt-10">
-          No data found. Search a valid LeetCode username.
-        </p>
+        <p className="text-center text-gray-500 mt-10">No data found. Search a valid LeetCode username.</p>
       )}
     </div>
   );

@@ -1,6 +1,6 @@
 import { useState } from "react";
+import img from '../assets/codeforces.png' 
 
-// Moved to top so it can be reused in Stat
 const getRankColor = (rating) => {
   if (!rating || isNaN(rating)) {
     return { border: "border-gray-500", text: "text-gray-500" };
@@ -101,7 +101,7 @@ const Codeforces = () => {
         className="sticky top-0 z-10 bg-gray-900 shadow-lg p-4 rounded-xl flex justify-center gap-4 mb-6"
       >
         <img
-          src="../image/codeforces.png"
+          src={img}
           alt="Codeforces Logo"
           className="h-12 w-auto mr-4"
         />

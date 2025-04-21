@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import img from '../assets/codechef.png' 
 
 const getColorClassByRating = (rating) => {
   if (rating >= 2500) return "text-orange-500"; // 6-7
@@ -58,7 +58,7 @@ const Codechef = () => {
         className="sticky top-0 z-10 bg-gray-900 shadow-lg p-4 rounded-xl flex justify-center gap-4 mb-6"
       >
         <img
-          src="../image/codechef.png"
+          src={img}
           alt="CodeChef Logo"
           className="h-12 w-auto mr-4"
         />
