@@ -123,7 +123,7 @@ const Codeforces = () => {
 
       {loading ? (
         <div className="text-center text-white">
-          <div className="spinner-border animate-spin border-4 border-t-4 border-purple-500 rounded-full w-16 h-16 mx-auto"></div>
+          <div className="animate-spin border-4 border-t-blue-500 rounded-full w-16 h-16 mx-auto border-white"></div>
           <p>Loading...</p>
         </div>
       ) : data ? (
